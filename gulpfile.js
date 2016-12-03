@@ -5,7 +5,7 @@
 	// 读取文件模块
 	const fs = require('fs');
 	// 自动添加css前缀
-	const gulpAutoprefixer = require('gulp-autoprefixer');
+	const autoprefix = require("gulp-autoprefixer");
 	// 重命名文件
 	const rename = require('gulp-rename');
 	// 压缩css代码
@@ -35,7 +35,7 @@
 	// 编译sass
 	const sass = require('gulp-sass');
 	
-	// 等没有运行指定任务时，默认执行此任务
+	// 当没有运行指定任务时，默认执行此任务
 	gulp.task('default', (callback) => {
 		return runSequence(['clean'], ['build'], ['serve', 'watch'], callback);
 	});
@@ -60,9 +60,14 @@
 			.pipe(gulpConcat('assets.css', {
 				newLine: '\n\n'
 			}))
+			// 自动添加浏览器前缀
+			.pipe(autoprefix({
+				browsers: ['last 2 versions'],
+            	cascade: false
+			}))
 			.pipe(gulpMinifyCss())
 			.pipe(gulp.dest('dist/assets/css/'))
-			.pipe(gulpNotify({ message: 'AseetsCss task complete' }))
+			//.pipe(gulpNotify({ message: 'AseetsCss task complete' }))
 	});
 	
 	// 合并压缩通用的JS文件
@@ -73,7 +78,7 @@
 			})
 			.pipe(gulpUglify())
 			.pipe(gulp.dest('dist/assets/js/'))
-			.pipe(gulpNotify({ message: 'AseetsJs task complete' }))
+			//.pipe(gulpNotify({ message: 'AseetsJs task complete' }))
 	});
 	
 	// 编译压缩ES6语法文件
@@ -84,15 +89,23 @@
 			}))
 			.pipe(gulpUglify())
 			.pipe(gulp.dest('dist/script/'))
-			.pipe(gulpNotify({ message: 'ES6 task complete' }))
+			//.pipe(gulpNotify({ message: 'ES6 task complete' }))
 	});
 	
 	// 编译压缩SCSS文件
 	gulp.task('sassfile', (callback) => {
 		return gulp.src('src/scss/**/*.scss')
-			.pipe(sass({ outputStyle: 'compressed' }))
+			// 自动添加浏览器前缀
+			.pipe(autoprefix({
+				browsers: ['last 2 versions'],
+            	cascade: false
+			}))
+			.pipe(sass({
+				outputStyle: 'compressed'
+			}))
+			.on('error', sass.logError))
 			.pipe(gulp.dest('dist/style/'))
-			.pipe(gulpNotify({ message: 'Scss task complete' }))
+			//.pipe(gulpNotify({ message: 'Scss task complete' }))
 	});
 	
 	// 合并图标，生成雪碧图
@@ -123,7 +136,7 @@
 	            }
 			}))
 			.pipe(gulp.dest('dist/'))
-			.pipe(gulpNotify({ message: 'Images task complete' }))
+			//.pipe(gulpNotify({ message: 'Images task complete' }))
 	});
 	
 	// 合并图片
@@ -134,7 +147,7 @@
 				progressive: true, interlaced: true
 			})))
 			.pipe(gulp.dest('dist/images/'))
-			.pipe(gulpNotify({ message: 'Images task complete' }))
+			//.pipe(gulpNotify({ message: 'Images task complete' }))
 	});
 	
 	// 压缩html文件
@@ -151,7 +164,7 @@
 				minifyCSS: true
 			}))
 			.pipe(gulp.dest('dist/'))
-			.pipe(gulpNotify({ message: 'HTML task complete' }))
+			//.pipe(gulpNotify({ message: 'HTML task complete' }))
 	});
 	
 	//配置访问前端文件服务器
