@@ -103,7 +103,7 @@
 			.pipe(sass({
 				outputStyle: 'compressed'
 			}))
-			.on('error', sass.logError))
+			.on('error', sass.logError)
 			.pipe(gulp.dest('dist/style/'))
 			//.pipe(gulpNotify({ message: 'Scss task complete' }))
 	});
